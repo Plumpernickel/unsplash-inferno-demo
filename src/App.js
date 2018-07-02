@@ -2,8 +2,32 @@ import { version, Component } from 'inferno';
 import './registerServiceWorker';
 import Logo from './logo';
 import './App.css';
+import Unsplash, { toJson } from 'unsplash-js';
 
 class App extends Component {
+  constructor() {
+    super();
+    this.state = {};
+    this.unsplash = null;
+  }
+
+  componentDidMount() {
+    this.unsplash = new Unsplash({
+      applicationId: "451938f9d0f188efa6822b272c77db0f7773a5866ee7999ed47da3d9c9076e12",
+      secret: "451938f9d0f188efa6822b272c77db0f7773a5866ee7999ed47da3d9c9076e12",
+      callbackUrl: "urn:ietf:wg:oauth:2.0:oob"
+    });
+
+    if (this.unsplash.photos) {
+      this.unsplash.photos.listPhotos(1, 25, "latest")
+        .then(toJson)
+        // eslint-disable-next-line
+        .then(response => {
+          console.log(response);
+        });
+    }
+  }
+
   render() {
     return (
       <div className="App">
@@ -14,7 +38,7 @@ class App extends Component {
           </h1>
         </header>
         <div class="container">
-            <div><img src="img/normal1.jpg"/></div>
+            <div><img src="img/normal1.jpg" alt="whatever1" /></div>
             <div class="vertical"><img src="img/vertical1.jpg"/></div>
             <div class="horizontal"><img src="img/horizontal1.jpg"/></div>
             <div><img src="img/normal2.jpg"/></div>

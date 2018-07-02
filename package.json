@@ -4,7 +4,8 @@
   "private": true,
   "dependencies": {
     "inferno": "^5.2.0",
-    "inferno-scripts": "6.3.0"
+    "inferno-scripts": "6.3.0",
+    "unsplash-js": "^4.8.0"
   },
   "scripts": {
     "start": "inferno-scripts start",
