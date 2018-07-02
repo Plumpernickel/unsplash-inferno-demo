@@ -1,0 +1,29 @@
+.container > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2em;
+}
+
+.container > div > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+html, body {
+  background-color: #131313;
+  margin: 15px;
+  color: lightgray;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-weight: 300;
+}
+
+h1 {
+  text-align: center;
+}
+
+h1 > svg {
+  vertical-align: middle;
+}
+

@@ -1,0 +1,15 @@
+{
+  "name": "unsplash-demo",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "inferno": "^5.2.0",
+    "inferno-scripts": "6.3.0"
+  },
+  "scripts": {
+    "start": "inferno-scripts start",
+    "build": "inferno-scripts build",
+    "test": "inferno-scripts test --env=jsdom",
+    "eject": "inferno-scripts eject"
+  }
+}
