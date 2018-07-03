@@ -1,4 +1,4 @@
-.container {
+.infinite-scroll-component {
   display: grid;
   grid-gap: 5px;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));

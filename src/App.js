@@ -3,6 +3,7 @@ import './registerServiceWorker';
 import Logo from './logo';
 import './App.css';
 import Unsplash, { toJson } from 'unsplash-js';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 class App extends Component {
   constructor() {
@@ -96,9 +97,14 @@ class App extends Component {
             <span>&emsp;{`InfernoJS ${version} Unsplash Gallery`}</span>
           </h1>
         </header>
-        <div class="container">
-            {this.state.loading ? 'Fetching photos...' : photosToRender}
-        </div>
+        <InfiniteScroll
+          dataLength={this.state.photos.length}
+          next={this.fetchPhotos}
+          hasMore={true}
+          loader={<h4>Fetching Photos...</h4>}
+        >
+          {photosToRender}
+        </InfiniteScroll>
       </div>
     );
   }
