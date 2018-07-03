@@ -10,14 +10,18 @@ class App extends Component {
 
     this.state = {
       photos: [],
-      currentPage: 1
+      currentPage: 1,
+      loading: false
     };
 
     this.unsplash = null;
     this.resolveOrientationClass = this.resolveOrientationClass.bind(this);
+    this.fetchPhotos = this.fetchPhotos.bind(this);
   }
 
   componentDidMount() {
+    this.setState({loading: true});
+
     this.unsplash = new Unsplash({
       applicationId: "451938f9d0f188efa6822b272c77db0f7773a5866ee7999ed47da3d9c9076e12",
       secret: "451938f9d0f188efa6822b272c77db0f7773a5866ee7999ed47da3d9c9076e12",
@@ -25,31 +29,40 @@ class App extends Component {
     });
 
     if (this.unsplash.photos) {
-      this.unsplash.photos.listPhotos(1, 25, "latest")
-        .then(toJson)
-        // eslint-disable-next-line
-        .then(apiPhotos => {
-          const formattedPhotos = [];
-          apiPhotos.forEach(apiPhoto => {
-            const formattedPhotoObj = {
-              listUrl: apiPhoto.urls.small,
-              fullUrl: apiPhoto.urls.raw,
-              fullHeight: apiPhoto.height,
-              fullWidth: apiPhoto.width,
-              downloadLink: apiPhoto.links.download,
-              userData: apiPhoto.user,
-              creationDate: apiPhoto.created_at
-            }
-
-            formattedPhotos.push(formattedPhotoObj);
-          });
-
-          this.setState((prevState, props) => ({
-            photos: prevState.photos.concat(formattedPhotos),
-            currentPage: prevState.currentPage
-          }));
-        });
+      this.fetchPhotos();
     }
+  }
+
+  fetchPhotos() {
+    if (!this.state.loading) {
+      this.setState({loading: true});
+    }
+
+    this.unsplash.photos.listPhotos(this.state.currentPage, 25, "latest")
+      .then(toJson)
+      // eslint-disable-next-line
+      .then(apiPhotos => {
+        const formattedPhotos = [];
+        apiPhotos.forEach(apiPhoto => {
+          const formattedPhotoObj = {
+            listUrl: apiPhoto.urls.small,
+            fullUrl: apiPhoto.urls.raw,
+            fullHeight: apiPhoto.height,
+            fullWidth: apiPhoto.width,
+            downloadLink: apiPhoto.links.download,
+            userData: apiPhoto.user,
+            creationDate: apiPhoto.created_at
+          }
+
+          formattedPhotos.push(formattedPhotoObj);
+        });
+
+        this.setState((prevState, props) => ({
+          photos: prevState.photos.concat(formattedPhotos),
+          currentPage: prevState.currentPage + 1,
+          loading: false
+        }));
+      });
   }
 
   resolveOrientationClass(width, height, idx) {
@@ -73,7 +86,7 @@ class App extends Component {
       <div className={this.resolveOrientationClass(photo.fullWidth, photo.fullHeight, idx)}>
         <img src={photo.listUrl} alt={'unsplash latest photo ' + idx} />
       </div>
-    )) : 'Fetching photos...';
+    )) : 'Oops, this shouldn\'t be happening! Please contact the genius in charge here....';
 
     return (
       <div className="App">
@@ -84,7 +97,7 @@ class App extends Component {
           </h1>
         </header>
         <div class="container">
-            {photosToRender}
+            {this.state.loading ? 'Fetching photos...' : photosToRender}
         </div>
       </div>
     );
