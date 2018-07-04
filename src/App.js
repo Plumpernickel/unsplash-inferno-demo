@@ -12,7 +12,7 @@ class App extends Component {
     this.state = {
       photos: [],
       currentPage: 1,
-      loading: false
+      hasMore: true
     };
 
     this.unsplash = null;
@@ -21,8 +21,6 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.setState({loading: true});
-
     this.unsplash = new Unsplash({
       applicationId: "451938f9d0f188efa6822b272c77db0f7773a5866ee7999ed47da3d9c9076e12",
       secret: "451938f9d0f188efa6822b272c77db0f7773a5866ee7999ed47da3d9c9076e12",
@@ -35,17 +33,16 @@ class App extends Component {
   }
 
   fetchPhotos() {
-    if (!this.state.loading) {
-      this.setState({loading: true});
-    }
-
     this.unsplash.photos.listPhotos(this.state.currentPage, 25, "latest")
       .then(toJson)
       // eslint-disable-next-line
       .then(apiPhotos => {
+        this.setState({hasMore: apiPhotos && apiPhotos.length > 0});
+
         const formattedPhotos = [];
-        apiPhotos.forEach(apiPhoto => {
+        apiPhotos.forEach((apiPhoto, idx) => {
           const formattedPhotoObj = {
+            pos: idx,
             listUrl: apiPhoto.urls.small,
             fullUrl: apiPhoto.urls.raw,
             fullHeight: apiPhoto.height,
@@ -100,8 +97,8 @@ class App extends Component {
         <InfiniteScroll
           dataLength={this.state.photos.length}
           next={this.fetchPhotos}
-          hasMore={true}
-          loader={<h4>Fetching Photos...</h4>}
+          hasMore={this.state.hasMore}
+          loader={<h4 className='loading'>Fetching Photos...</h4>}
         >
           {photosToRender}
         </InfiniteScroll>
