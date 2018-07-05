@@ -1,10 +1,10 @@
-.infinite-scroll-component > div {
+.infinite-scroll-component > a {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.infinite-scroll-component > div > img {
+.infinite-scroll-component > a > img {
   width: 100%;
   height: 100%;
   object-fit: cover;

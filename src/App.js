@@ -4,6 +4,7 @@ import Logo from './logo';
 import './App.css';
 import Unsplash, { toJson } from 'unsplash-js';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import Modal from 'react-modal';
 
 class App extends Component {
   constructor() {
@@ -12,12 +13,16 @@ class App extends Component {
     this.state = {
       photos: [],
       currentPage: 1,
-      hasMore: true
+      hasMore: true,
+      isFullView: false,
+      currentPhoto: null
     };
 
     this.unsplash = null;
     this.resolveOrientationClass = this.resolveOrientationClass.bind(this);
     this.fetchPhotos = this.fetchPhotos.bind(this);
+    this.handleHashChange = this.handleHashChange.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   componentDidMount() {
@@ -30,6 +35,8 @@ class App extends Component {
     if (this.unsplash.photos) {
       this.fetchPhotos();
     }
+
+    window.addEventListener('hashchange', this.handleHashChange);
   }
 
   fetchPhotos() {
@@ -43,6 +50,7 @@ class App extends Component {
           const formattedPhotos = [];
           apiPhotos.forEach((apiPhoto, idx) => {
             const formattedPhotoObj = {
+              id: apiPhoto.id,
               pos: idx,
               listUrl: apiPhoto.urls.small,
               fullUrl: apiPhoto.urls.raw,
@@ -65,6 +73,23 @@ class App extends Component {
       });
   }
 
+  handleClose() {
+    this.setState({isFullView: false});
+    window.location.hash = '';
+  }
+
+  handleHashChange() {
+    const photoId = window.location.hash.substring(1);
+
+    if (photoId.length) {
+      let foundPhoto = this.state.photos.find(photo => photo.id === photoId);
+  
+      if (foundPhoto !== this.state.currentPhoto) {
+        this.setState({currentPhoto: foundPhoto, isFullView: true});
+      }
+    }
+  }
+
   resolveOrientationClass(width, height, idx) {
     let resolvedClass = '';
 
@@ -84,9 +109,12 @@ class App extends Component {
   render() {
     let photosToRender = this.state.photos && this.state.photos.length ? 
       this.state.photos.map((photo, idx) => (
-      <div className={this.resolveOrientationClass(photo.fullWidth, photo.fullHeight, idx)}>
+      <a 
+        href={'#' + photo.id} 
+        className={this.resolveOrientationClass(photo.fullWidth, photo.fullHeight, idx)}
+      >
         <img src={photo.listUrl} alt={'unsplash latest photo ' + idx} />
-      </div>
+      </a>
       )) : <h4>Oops, this shouldn't be happening! Please contact the genius in charge here...</h4>;
 
     return (
@@ -97,6 +125,16 @@ class App extends Component {
             <span>&emsp;{`InfernoJS ${version} Unsplash Gallery`}</span>
           </h1>
         </header>
+        <Modal
+          isOpen={this.state.isFullView} 
+          onRequestClose={this.handleClose}
+        >
+          <img 
+            className='responsive-img' 
+            src={this.state.currentPhoto ? this.state.currentPhoto.fullUrl : ''} 
+            alt='Helloooo' 
+          />
+        </Modal>
         <InfiniteScroll
           dataLength={this.state.photos.length}
           next={this.fetchPhotos}
