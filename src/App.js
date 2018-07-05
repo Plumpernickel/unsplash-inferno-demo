@@ -39,27 +39,29 @@ class App extends Component {
       .then(apiPhotos => {
         this.setState({hasMore: apiPhotos && apiPhotos.length > 0});
 
-        const formattedPhotos = [];
-        apiPhotos.forEach((apiPhoto, idx) => {
-          const formattedPhotoObj = {
-            pos: idx,
-            listUrl: apiPhoto.urls.small,
-            fullUrl: apiPhoto.urls.raw,
-            fullHeight: apiPhoto.height,
-            fullWidth: apiPhoto.width,
-            downloadLink: apiPhoto.links.download,
-            userData: apiPhoto.user,
-            creationDate: apiPhoto.created_at
-          }
+        if (this.state.hasMore) {
+          const formattedPhotos = [];
+          apiPhotos.forEach((apiPhoto, idx) => {
+            const formattedPhotoObj = {
+              pos: idx,
+              listUrl: apiPhoto.urls.small,
+              fullUrl: apiPhoto.urls.raw,
+              fullHeight: apiPhoto.height,
+              fullWidth: apiPhoto.width,
+              downloadLink: apiPhoto.links.download,
+              userData: apiPhoto.user,
+              creationDate: apiPhoto.created_at
+            }
 
-          formattedPhotos.push(formattedPhotoObj);
-        });
+            formattedPhotos.push(formattedPhotoObj);
+          });
 
-        this.setState((prevState, props) => ({
-          photos: prevState.photos.concat(formattedPhotos),
-          currentPage: prevState.currentPage + 1,
-          loading: false
-        }));
+          this.setState((prevState, props) => ({
+            photos: prevState.photos.concat(formattedPhotos),
+            currentPage: prevState.currentPage + 1,
+            loading: false
+          }));
+        }
       });
   }
 
@@ -80,11 +82,12 @@ class App extends Component {
   }
 
   render() {
-    let photosToRender = this.state.photos ? this.state.photos.map((photo, idx) => (
+    let photosToRender = this.state.photos && this.state.photos.length ? 
+      this.state.photos.map((photo, idx) => (
       <div className={this.resolveOrientationClass(photo.fullWidth, photo.fullHeight, idx)}>
         <img src={photo.listUrl} alt={'unsplash latest photo ' + idx} />
       </div>
-    )) : 'Oops, this shouldn\'t be happening! Please contact the genius in charge here....';
+      )) : <h4>Oops, this shouldn't be happening! Please contact the genius in charge here...</h4>;
 
     return (
       <div className="App">
