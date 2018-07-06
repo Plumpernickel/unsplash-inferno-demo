@@ -17,7 +17,9 @@ class App extends Component {
       currentPage: 1,
       hasMore: true,
       isFullView: false,
-      currentPhoto: null
+      prevPhotoHash: '',
+      currentPhoto: null,
+      nextPhotoHash: ''
     };
 
     this.unsplash = null;
@@ -25,7 +27,6 @@ class App extends Component {
     this.fetchPhotos = this.fetchPhotos.bind(this);
     this.handleHashChange = this.handleHashChange.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.handleCycling = this.handleCycling.bind(this);
   }
 
   componentDidMount() {
@@ -86,24 +87,15 @@ class App extends Component {
 
     if (photoId.length) {
       let foundPhoto = this.state.photos.find(photo => photo.id === photoId);
-  
-      this.setState({currentPhoto: foundPhoto, isFullView: true});
-    }
-  }
 
-  handleCycling(currentPos, cycleNext=true) {
-    if (currentPos !== null && this.state.photos) {
-      let resolvedIndex = cycleNext ? currentPos + 1 : currentPos - 1;
-
-      this.setState((prevState, props) => {
-        return {
-          photos: prevState.photos,
-          currentPage: prevState.currentPage,
-          hasMore: prevState.hasMore,
-          isFullView: prevState.isFullView,
-          currentPhoto: prevState.photos[resolvedIndex]
-        };
-      });
+      if (foundPhoto) {
+        this.setState({
+          prevPhotoHash: this.state.photos[foundPhoto.pos - 1].id,
+          currentPhoto: foundPhoto,
+          nextPhotoHash: this.state.photos[foundPhoto.pos + 1].id,
+          isFullView: true
+        });
+      }
     }
   }
 
@@ -136,11 +128,11 @@ class App extends Component {
 
     let modalContent = this.state.currentPhoto ? (
       <div className='flex-container'>
-        <button><h1>&lt;</h1></button>
+        <a href={'#' + this.state.prevPhotoHash}><h1>&lt;</h1></a>
         <div>
           <img className='responsive-img' src={this.state.currentPhoto.fullUrl} alt='Unsplash Full View Placeholder' />
         </div>
-        <button><h1>&gt;</h1></button>
+        <a href={'#' + this.state.nextPhotoHash}><h1>&gt;</h1></a>
       </div>
     ) : <h4>No photo has been selected....</h4>;
 

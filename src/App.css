@@ -6,6 +6,10 @@
   grid-auto-flow: dense;
 }
 
+*:focus {
+  outline: none;
+}
+
 .infinite-scroll-component > a {
   transition: all 0.2s ease;
 }
@@ -22,7 +26,7 @@
   flex-wrap: row-wrap;
 }
 
-button {
+.flex-container > a {
   border: none;
   background: transparent;
   color: cornsilk;
