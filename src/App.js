@@ -6,6 +6,8 @@ import Unsplash, { toJson } from 'unsplash-js';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Modal from 'react-modal';
 
+Modal.setAppElement('#app');
+
 class App extends Component {
   constructor() {
     super();
@@ -23,6 +25,7 @@ class App extends Component {
     this.fetchPhotos = this.fetchPhotos.bind(this);
     this.handleHashChange = this.handleHashChange.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.handleCycling = this.handleCycling.bind(this);
   }
 
   componentDidMount() {
@@ -84,9 +87,23 @@ class App extends Component {
     if (photoId.length) {
       let foundPhoto = this.state.photos.find(photo => photo.id === photoId);
   
-      if (foundPhoto !== this.state.currentPhoto) {
-        this.setState({currentPhoto: foundPhoto, isFullView: true});
-      }
+      this.setState({currentPhoto: foundPhoto, isFullView: true});
+    }
+  }
+
+  handleCycling(currentPos, cycleNext=true) {
+    if (currentPos !== null && this.state.photos) {
+      let resolvedIndex = cycleNext ? currentPos + 1 : currentPos - 1;
+
+      this.setState((prevState, props) => {
+        return {
+          photos: prevState.photos,
+          currentPage: prevState.currentPage,
+          hasMore: prevState.hasMore,
+          isFullView: prevState.isFullView,
+          currentPhoto: prevState.photos[resolvedIndex]
+        };
+      });
     }
   }
 
@@ -117,6 +134,16 @@ class App extends Component {
       </a>
       )) : <h4>Oops, this shouldn't be happening! Please contact the genius in charge here...</h4>;
 
+    let modalContent = this.state.currentPhoto ? (
+      <div className='flex-container'>
+        <button><h1>&lt;</h1></button>
+        <div>
+          <img className='responsive-img' src={this.state.currentPhoto.fullUrl} alt='Unsplash Full View Placeholder' />
+        </div>
+        <button><h1>&gt;</h1></button>
+      </div>
+    ) : <h4>No photo has been selected....</h4>;
+
     return (
       <div className="App">
         <header className="App-header">
@@ -129,11 +156,7 @@ class App extends Component {
           isOpen={this.state.isFullView} 
           onRequestClose={this.handleClose}
         >
-          <img 
-            className='responsive-img' 
-            src={this.state.currentPhoto ? this.state.currentPhoto.fullUrl : ''} 
-            alt='Helloooo' 
-          />
+          {modalContent}
         </Modal>
         <InfiniteScroll
           dataLength={this.state.photos.length}
