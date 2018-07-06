@@ -73,6 +73,8 @@ class App extends Component {
             currentPage: prevState.currentPage + 1,
             loading: false
           }));
+
+          console.log(this.state.photos[0].userData);
         }
       });
   }
@@ -90,9 +92,9 @@ class App extends Component {
 
       if (foundPhoto) {
         this.setState({
-          prevPhotoHash: this.state.photos[foundPhoto.pos - 1].id,
+          prevPhotoHash: this.state.photos[foundPhoto.pos - 1] ? this.state.photos[foundPhoto.pos - 1].id : '',
           currentPhoto: foundPhoto,
-          nextPhotoHash: this.state.photos[foundPhoto.pos + 1].id,
+          nextPhotoHash: this.state.photos[foundPhoto.pos + 1] ? this.state.photos[foundPhoto.pos + 1].id : '',
           isFullView: true
         });
       }
@@ -130,7 +132,13 @@ class App extends Component {
       <div className='flex-container'>
         <a href={'#' + this.state.prevPhotoHash}><h1>&lt;</h1></a>
         <div>
+          <h3>
+            {this.state.currentPhoto.userData.name}
+            <br />
+            <small>{this.state.currentPhoto.userData.location}</small>
+          </h3>
           <img className='responsive-img' src={this.state.currentPhoto.fullUrl} alt='Unsplash Full View Placeholder' />
+          <h5 className='text-right'>{'Uploaded on ' + new Date(this.state.currentPhoto.creationDate).toLocaleDateString()}</h5>
         </div>
         <a href={'#' + this.state.nextPhotoHash}><h1>&gt;</h1></a>
       </div>
