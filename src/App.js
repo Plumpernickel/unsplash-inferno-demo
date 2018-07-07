@@ -1,10 +1,14 @@
+// Base dependencies
 import { version, Component } from 'inferno';
 import './registerServiceWorker';
-import Logo from './logo';
-import './App.css';
 import Unsplash, { toJson } from 'unsplash-js';
+// Plugins
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Modal from 'react-modal';
+// CSS and static assets
+import Logo from './logo';
+import './App.css';
+import './modal.css';
 
 Modal.setAppElement('#app');
 
@@ -179,6 +183,7 @@ class App extends Component {
         <Modal
           isOpen={this.state.isFullView} 
           onRequestClose={this.handleClose}
+          closeTimeoutMS={500}
         >
           {modalContent}
         </Modal>
