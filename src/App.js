@@ -37,9 +37,9 @@ class App extends Component {
 
     // Initialize an authenticated Unsplash API instance
     this.unsplash = new Unsplash({
-      applicationId: "451938f9d0f188efa6822b272c77db0f7773a5866ee7999ed47da3d9c9076e12",
-      secret: "451938f9d0f188efa6822b272c77db0f7773a5866ee7999ed47da3d9c9076e12",
-      callbackUrl: "urn:ietf:wg:oauth:2.0:oob"
+      applicationId: process.env.INFERNO_APP_UNSPLASH_ID,
+      secret: process.env.INFERNO_APP_UNSPLASH_SECRET,
+      callbackUrl: process.env.INFERNO_APP_UNSPLASH_SECRET
     });
 
     if (this.unsplash.photos) {
