@@ -37,7 +37,7 @@
 
 .flex-container > div {
   margin: auto 25px;
-  width: 1024px; height: 720px;
+  width: 95vw; height: 720px;
   display: flex;
   flex-direction: column;
 }
@@ -46,7 +46,9 @@
   background: transparent !important;
   border: none !important;
   overflow: hidden !important;
-  top: 0px !important;
+  top: 0px !important; 
+  left: 10px !important;
+  right: 10px !important;
 }
 
 .ReactModal__Overlay {
@@ -78,6 +80,15 @@
 
 .responsive-img-vertical {
   width: 35%; height: 60%;
+}
+
+@media screen and (max-width: 600px) {
+  .responsive-img-,
+  .responsive-img-big,
+  .responsive-img-horizontal,
+  .responsive-img-vertical {
+    height: 45%; width: 100%;
+  }
 }
 
 .horizontal {
