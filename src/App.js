@@ -162,17 +162,21 @@ class App extends Component {
 
     let modalContent = this.state.currentPhoto ? (
       <div className='flex-container'>
-        <a href={'#' + this.state.prevPhotoHash}><h1>&lt;</h1></a>
+        {this.state.currentPhoto.pos !== 0 ? <a href={'#' + this.state.prevPhotoHash}><h1>&lt;</h1></a> : null}
         <div>
           <h3>
             {this.state.currentPhoto.userName}
             <br />
             <small>{this.state.currentPhoto.location}</small>
           </h3>
-          <img className={'responsive-img-' + this.state.currentPhoto.orientation} src={this.state.currentPhoto.fullUrl} alt='Unsplash Full View Placeholder' />
+          <img 
+            className={'responsive-img-' + this.state.currentPhoto.orientation}
+            src={this.state.currentPhoto.fullUrl}
+            alt='Unsplash Full View Placeholder'
+          />
           <h5 className='text-right'>{'Uploaded on ' + new Date(this.state.currentPhoto.creationDate).toLocaleDateString()}</h5>
         </div>
-        <a href={'#' + this.state.nextPhotoHash}><h1>&gt;</h1></a>
+        {this.state.currentPhoto.pos !== this.state.photos.length - 1 ? <a href={'#' + this.state.nextPhotoHash}><h1>&gt;</h1></a> : null}
       </div>
     ) : <h4>No photo has been selected....</h4>;
 
