@@ -77,10 +77,12 @@ class App extends Component {
               fullUrl: apiPhoto.urls.raw,
               fullHeight: apiPhoto.height,
               fullWidth: apiPhoto.width,
-              downloadLink: apiPhoto.links.download,
-              userData: apiPhoto.user,
+              userName: apiPhoto.user.name,
+              location: apiPhoto.user.location,
               creationDate: apiPhoto.created_at
             }
+
+            formattedPhotoObj.orientation = this.resolveOrientationClass(formattedPhotoObj.fullWidth, formattedPhotoObj.fullHeight);
 
             formattedPhotos.push(formattedPhotoObj);
           });
@@ -121,7 +123,7 @@ class App extends Component {
   // A function which ingests photo measurements and
   // return the most appropriate CSS class responsible
   // for the container element's aspect ratio
-  resolveOrientationClass(width, height, idx) {
+  resolveOrientationClass(width, height) {
     let resolvedClass = '';
 
     if (width / height > 1.75 && height / width < 1) {
@@ -144,7 +146,7 @@ class App extends Component {
       this.state.photos.map((photo, idx) => (
       <a 
         href={'#' + photo.id} 
-        className={this.resolveOrientationClass(photo.fullWidth, photo.fullHeight, idx)}
+        className={photo.orientation}
       >
         <img src={photo.listUrl} alt={'unsplash latest photo ' + idx} />
       </a>
@@ -155,11 +157,11 @@ class App extends Component {
         <a href={'#' + this.state.prevPhotoHash}><h1>&lt;</h1></a>
         <div>
           <h3>
-            {this.state.currentPhoto.userData.name}
+            {this.state.currentPhoto.userName}
             <br />
-            <small>{this.state.currentPhoto.userData.location}</small>
+            <small>{this.state.currentPhoto.location}</small>
           </h3>
-          <img className='responsive-img' src={this.state.currentPhoto.fullUrl} alt='Unsplash Full View Placeholder' />
+          <img className={'responsive-img-' + this.state.currentPhoto.orientation} src={this.state.currentPhoto.fullUrl} alt='Unsplash Full View Placeholder' />
           <h5 className='text-right'>{'Uploaded on ' + new Date(this.state.currentPhoto.creationDate).toLocaleDateString()}</h5>
         </div>
         <a href={'#' + this.state.nextPhotoHash}><h1>&gt;</h1></a>
