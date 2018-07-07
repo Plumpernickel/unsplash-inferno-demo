@@ -108,6 +108,10 @@ class App extends Component {
   // A function which takes advantage of the HTML5 location API
   // to switch between gallery and full-view UI contexts
   handleHashChange() {
+    if (window.location.hash.indexOf('exit') !== -1) {
+      return this.handleClose();
+    }
+
     const photoId = window.location.hash.substring(1);
 
     if (photoId.length) {
@@ -185,6 +189,7 @@ class App extends Component {
           onRequestClose={this.handleClose}
           closeTimeoutMS={500}
         >
+          <a href='#exit' className='closeButton'><h1>x</h1></a>
           {modalContent}
         </Modal>
         <InfiniteScroll
