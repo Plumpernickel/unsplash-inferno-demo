@@ -61,7 +61,7 @@
 }
 
 .responsive-img {
-  width: 60%; height: 60%;
+  width: 66%; height: 60%;
   object-fit: cover;
   margin: 0 auto;
 }

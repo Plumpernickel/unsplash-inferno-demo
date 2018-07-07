@@ -30,6 +30,12 @@ class App extends Component {
   }
 
   componentDidMount() {
+    // Fixes inability to enter fullscreen view of same photo after refresh
+    if (window.location.hash.length) {
+      window.location.hash = '';
+    }
+
+    // Initialize an authenticated Unsplash API instance
     this.unsplash = new Unsplash({
       applicationId: "451938f9d0f188efa6822b272c77db0f7773a5866ee7999ed47da3d9c9076e12",
       secret: "451938f9d0f188efa6822b272c77db0f7773a5866ee7999ed47da3d9c9076e12",
@@ -40,7 +46,13 @@ class App extends Component {
       this.fetchPhotos();
     }
 
+    // Event is not synthesized by Inferno, so hook up to it manually
     window.addEventListener('hashchange', this.handleHashChange);
+  }
+
+  // Tear-down component properly by removing any manually attached event listeners
+  componentWillUnmount() {
+    window.removeEventListener('hashchange');
   }
 
   fetchPhotos() {
@@ -50,8 +62,13 @@ class App extends Component {
       .then(apiPhotos => {
         this.setState({hasMore: apiPhotos && apiPhotos.length > 0});
 
+        // Base our continued operations on whether our request returned
+        // any meaningful length of data to work with
         if (this.state.hasMore) {
           const formattedPhotos = [];
+
+          // Format and filter out any unneeded properties before adding
+          // a new item to our collection
           apiPhotos.forEach((apiPhoto, idx) => {
             const formattedPhotoObj = {
               id: apiPhoto.id,
@@ -73,8 +90,6 @@ class App extends Component {
             currentPage: prevState.currentPage + 1,
             loading: false
           }));
-
-          console.log(this.state.photos[0].userData);
         }
       });
   }
@@ -84,6 +99,8 @@ class App extends Component {
     window.location.hash = '';
   }
 
+  // A function which takes advantage of the HTML5 location API
+  // to switch between gallery and full-view UI contexts
   handleHashChange() {
     const photoId = window.location.hash.substring(1);
 
@@ -101,6 +118,9 @@ class App extends Component {
     }
   }
 
+  // A function which ingests photo measurements and
+  // return the most appropriate CSS class responsible
+  // for the container element's aspect ratio
   resolveOrientationClass(width, height, idx) {
     let resolvedClass = '';
 
@@ -118,6 +138,8 @@ class App extends Component {
   }
 
   render() {
+    // We must use conditional rendering techniques to guard
+    // against attempting to access data which does not yet exist
     let photosToRender = this.state.photos && this.state.photos.length ? 
       this.state.photos.map((photo, idx) => (
       <a 
