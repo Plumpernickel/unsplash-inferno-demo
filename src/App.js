@@ -175,7 +175,7 @@ class App extends Component {
           <h3>
             {this.state.currentPhoto.userName}
             <br />
-            <small>{this.state.currentPhoto.location}</small>
+            {this.state.currentPhoto.location ? <small>{this.state.currentPhoto.location}</small> : <small>&emsp;</small>}
           </h3>
           <img 
             className={'responsive-img-' + this.state.currentPhoto.orientation}
