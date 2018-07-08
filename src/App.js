@@ -27,6 +27,13 @@ class App extends Component {
     };
 
     this.unsplash = null;
+
+    // We must unfortunately use an instance variable
+    // to manually keep track of a photo's true index
+    // relative to the total array for fullView cycling to function
+    // correctly.
+    this.truePhotoIndex = 0;
+
     this.resolveOrientationClass = this.resolveOrientationClass.bind(this);
     this.fetchPhotos = this.fetchPhotos.bind(this);
     this.handleHashChange = this.handleHashChange.bind(this);
@@ -76,7 +83,7 @@ class App extends Component {
           apiPhotos.forEach((apiPhoto, idx) => {
             const formattedPhotoObj = {
               id: apiPhoto.id,
-              pos: idx,
+              pos: this.truePhotoIndex,
               listUrl: apiPhoto.urls.small,
               fullUrl: apiPhoto.urls.regular,
               fullHeight: apiPhoto.height,
@@ -87,6 +94,7 @@ class App extends Component {
             }
 
             formattedPhotoObj.orientation = this.resolveOrientationClass(formattedPhotoObj.fullWidth, formattedPhotoObj.fullHeight);
+            this.truePhotoIndex++;
 
             formattedPhotos.push(formattedPhotoObj);
           });
@@ -158,7 +166,7 @@ class App extends Component {
       >
         <img src={photo.listUrl} alt={'unsplash latest photo ' + idx} />
       </a>
-      )) : <h4>Oops, this shouldn't be happening! Please contact the genius in charge here...</h4>;
+      )) : null;
 
     let modalContent = this.state.currentPhoto ? (
       <div className='flex-container'>
