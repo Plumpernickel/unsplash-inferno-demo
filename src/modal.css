@@ -13,6 +13,11 @@
   opacity: 1;
   transition: background-color 500ms ease;
 }
+
+.ReactModal__Body--open,
+.ReactModal__Html--open {
+  overflow: hidden;
+}
   
 .ReactModal__Content--before-close {
   opacity: 0;
