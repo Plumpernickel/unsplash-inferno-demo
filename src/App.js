@@ -78,7 +78,7 @@ class App extends Component {
               id: apiPhoto.id,
               pos: idx,
               listUrl: apiPhoto.urls.small,
-              fullUrl: apiPhoto.urls.raw,
+              fullUrl: apiPhoto.urls.regular,
               fullHeight: apiPhoto.height,
               fullWidth: apiPhoto.width,
               userName: apiPhoto.user.name,
